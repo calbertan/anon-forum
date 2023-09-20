@@ -4,7 +4,6 @@ import {useState, useEffect} from 'react'
 import TakeCard from './TakeCard'
 
 const TakeCardList = ({ data, handleTagClick }) => {
-  console.log(data)
   return (
     <div className='mt-16 take_layout'>
       {data.map((post) => (
@@ -54,14 +53,20 @@ const Feed = () => {
     setSearchedResults(searchResult)
   }
 
+  const fetchPosts = async () => {
+    const response = await fetch('/api/takes')
+    const data = await response.json()
+
+    console.log(data)
+    
+    setPosts(data)
+
+    console.log(data)
+  }
+
   useEffect(() => {
-    const fetchPosts = async () => {
-      const response = await fetch('/api/takes')
-      const data = await response.json()
-      
-      setPosts(data)
-    }
     fetchPosts()
+    console.log("fetched posts")
   }, [])
 
   return (
