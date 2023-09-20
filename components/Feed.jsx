@@ -54,14 +54,13 @@ const Feed = () => {
     setSearchedResults(searchResult)
   }
 
-  const fetchPosts = async () => {
-    const response = await fetch('/api/takes')
-    const data = await response.json()
-    
-    setPosts(data)
-  }
-
   useEffect(() => {
+    const fetchPosts = async () => {
+      const response = await fetch('/api/takes')
+      const data = await response.json()
+      
+      setPosts(data)
+    }
     fetchPosts()
   }, [])
 
