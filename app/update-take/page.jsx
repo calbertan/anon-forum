@@ -14,7 +14,7 @@ const EditTake = () => {
   const [post, setPost] = useState({
     take: '',
     tag: '',
-    anon: true
+    anon: false
   })
 
   useEffect(() => {

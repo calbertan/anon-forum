@@ -19,21 +19,49 @@ const TakeCardList = ({ data, handleTagClick }) => {
 } 
 
 const Feed = () => {
-  const [searchText, setSearchText] = useState('')
   const [posts, setPosts] = useState([])
-  
-  const handleSearchChange = (e) => {
+  const [searchText, setSearchText] = useState('')
+  const [searchTimeout, setSearchTimeout] = useState(null);
+  const [searchedResults, setSearchedResults] = useState([]);
 
+  const filterTakes = (searchtext) => {
+    // 'i' flag for case-insensitive search
+    const regex = new RegExp(searchtext, "i"); 
+    return posts.filter(
+      (item) => 
+        regex.test(item.creator.username) && !item.anon ||
+        regex.test(item.tag) ||
+        regex.test(item.take)
+    )
+  }
+
+  const handleSearchChange = (e) => {
+    clearTimeout(searchTimeout)
+    setSearchText(e.target.value)
+
+    setSearchTimeout(
+      setTimeout(() => {
+        const searchResult = filterTakes(e.target.value)
+        setSearchedResults(searchResult)
+      })
+    )
+  }
+
+  const handleTagClick = (tagName) => {
+    setSearchText(tagName)
+
+    const searchResult = filterTakes(tagName)
+    setSearchedResults(searchResult)
+  }
+
+  const fetchPosts = async () => {
+    const response = await fetch('/api/takes')
+    const data = await response.json()
+    
+    setPosts(data)
   }
 
   useEffect(() => {
-    const fetchPosts = async () => {
-      const response = await fetch('/api/takes')
-      const data = await response.json()
-      
-      setPosts(data)
-    }
-
     fetchPosts()
   }, [])
 
@@ -50,10 +78,17 @@ const Feed = () => {
         />
       </form>
 
-      <TakeCardList
-        data={posts}
-        handleTagClick={() => {}}
-      />
+      { searchText ? (
+        <TakeCardList
+          data={searchedResults}
+          handleTagClick={handleTagClick}
+        />
+      ):(
+        <TakeCardList
+          data={posts}
+          handleTagClick={handleTagClick}
+        />
+      )}
     </section>
   )
 }

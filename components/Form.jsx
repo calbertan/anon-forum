@@ -5,6 +5,8 @@ import Link from 'next/link'
 const Form = ({type,post,setPost,submitting,handleSubmit}) => {
   const [checked, setChecked] = useState(true)
 
+  console.log(post.anon)
+
   const setAnon = () => {
     setChecked(!checked)
     setPost({...post, anon: checked})
@@ -54,11 +56,14 @@ const Form = ({type,post,setPost,submitting,handleSubmit}) => {
           <span className="font-satoshi font-semibold text-base text-gray-700 mt-3">
             Post Anonymously
           </span>
+          
+          {/* https://stackoverflow.com/questions/43476729/react-checkbox-does-not-update */}
           <input
             type='checkbox'
             value={ checked }
             onChange={ setAnon }
-            defaultChecked={false}
+            key={Math.random()}
+            defaultChecked={ post.anon }
             className='ml-1'
           />
         </label>
@@ -70,7 +75,7 @@ const Form = ({type,post,setPost,submitting,handleSubmit}) => {
 
           <button
             type="submit"
-            disable={submitting}
+            disabled={submitting}
             className='px-5 py-1.5 text-sm bg-primary-orange rounded-full text-white'
           >
             {submitting ? `$type...` : type}
